@@ -1,0 +1,70 @@
+<main class="page">
+  <div class="header-container">
+    <h1>🐸 FrogGPT</h1>
+    <button type="button" class="mode-toggle" (click)="toggleMode()">
+      {{ currentMode === 'normal' ? '⚡ Super Frog Mode' : '✨ Super Frog Frog Mode' }}
+    </button>
+  </div>
+  <p class="subtitle">Ask any question. The frog shall respond.</p>
+  <p class="mode-indicator" [class.super-mode]="currentMode === 'superFrog'">
+    Mode: <strong>{{ currentMode === 'normal' ? 'Normal' : 'SUPER FROG FROG MODE!!!' }}</strong>
+  </p>
+
+  <form (ngSubmit)="askFrog()" class="ask-form">
+    <input
+      [(ngModel)]="question"
+      name="question"
+      placeholder="Ask your question..."
+      autocomplete="off"
+      [disabled]="isThinking"
+    />
+    <button type="submit" [disabled]="isThinking">
+      {{ isThinking ? "Thinking..." : "Ask Frog" }}
+    </button>
+  </form>
+
+  <section
+    class="answer thinking-box"
+    *ngIf="isThinking"
+    [class.super]="currentMode === 'superFrog'"
+  >
+    <h2 [class.super]="currentMode === 'superFrog'">
+      {{ currentMode === 'superFrog' ? 'SUPER FROG IS THINKING' : 'The Frog is thinking' }}<span
+        class="dots"
+        >...</span
+      >
+      🐸
+    </h2>
+  </section>
+
+  <section
+    class="answer"
+    *ngIf="latestAnswer && !isThinking"
+    [class.super]="currentMode === 'superFrog'"
+  >
+    <h2 [class.super]="currentMode === 'superFrog'">
+      {{ currentMode === 'superFrog' ? 'SUPER FROG SAYS:' : 'The Frog:' }}
+    </h2>
+    <p [class.super]="currentMode === 'superFrog'" class="frog-response">{{ latestAnswer }}</p>
+  </section>
+
+  <section class="history">
+    <div class="history-header">
+      <h2>Saved Questions</h2>
+      <button type="button" class="clear" (click)="clearHistory()" *ngIf="history.length">
+        Clear
+      </button>
+    </div>
+
+    <ul *ngIf="history.length; else empty">
+      <li *ngFor="let item of history">
+        <strong>Q:</strong> {{ item.question }}<br />
+        <strong>A:</strong> {{ item.answer }}
+      </li>
+    </ul>
+
+    <ng-template #empty>
+      <p>No saved questions yet.</p>
+    </ng-template>
+  </section>
+</main>
